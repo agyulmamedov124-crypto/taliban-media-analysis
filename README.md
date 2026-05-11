@@ -1,5 +1,4 @@
 # taliban-media-analysis
-Corpus analysis scripts for MA thesis on Taliban representation in Russian media
 
 Программный код для анализа корпуса публикаций, использованный в ВКР:
 
