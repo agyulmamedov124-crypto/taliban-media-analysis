@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 nominations.py
---------------
+
 Частотный анализ номинаций движения «Талибан» в корпусе публикаций.
 Подсчитывает частоту ключевых лексем в доталибанский и постталибанский
 периоды (до и после 15 августа 2021 года).
 Результат сохраняется в corpus_full.csv.
-
-Использование (Google Colab):
-    Запустите скрипт и загрузите corpus_sentiment.csv через диалоговое окно.
 
 Зависимости:
     pip install pandas
@@ -20,7 +17,7 @@ from collections import Counter
 from google.colab import files
 
 
-# --- ЗАГРУЗКА КОРПУСА ---
+# Загрузка корпуса
 uploaded = files.upload()
 df = pd.read_csv("corpus_sentiment.csv")
 df['date'] = pd.to_datetime(df['date'], dayfirst=True, errors='coerce')
@@ -32,7 +29,7 @@ df['period'] = df['date'].apply(
 print(f"Загружено: {len(df)} статей")
 
 
-# --- СЛОВАРЬ НОМИНАЦИЙ ---
+# Словарь номинаций
 NOMINATIONS = {
     "Талибан":                  r'\bТалибан\b',
     "талибы/талиб":             r'\bталиб[аыуов]*\b',
@@ -56,7 +53,7 @@ def count_nominations(text):
     }
 
 
-# --- ПОДСЧЁТ ---
+# Подсчет
 nom_df = df["text"].apply(count_nominations).apply(pd.Series)
 df = pd.concat([df, nom_df], axis=1)
 
@@ -89,6 +86,6 @@ print(norm.sort_values('до авг.2021', ascending=False).to_string())
 print("\n=== Номинации по изданиям ===")
 print(df.groupby("source")[nom_cols].sum().to_string())
 
-# --- СОХРАНЕНИЕ ---
+# Сохранение файла
 df.to_csv("corpus_full.csv", index=False, encoding="utf-8-sig")
 files.download("corpus_full.csv")
