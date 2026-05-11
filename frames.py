@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 frames.py
----------
+
 Автоматическая классификация публикаций корпуса по пяти фреймам
 репрезентации движения «Талибан». Публикации с неоднозначной
 классификацией помечаются для последующей ручной верификации.
@@ -14,9 +14,6 @@ frames.py
     4. Региональный стабилизатор
     5. Исторический контекст
 
-Использование (Google Colab):
-    Запустите скрипт и загрузите corpus_full.csv через диалоговое окно.
-
 Зависимости:
     pip install pandas
 """
@@ -26,7 +23,7 @@ import re
 from google.colab import files
 
 
-# --- ЗАГРУЗКА КОРПУСА ---
+# Загрузка корпуса
 uploaded = files.upload()
 df = pd.read_csv("corpus_full.csv")
 df['date'] = pd.to_datetime(df['date'], dayfirst=True, errors='coerce')
@@ -37,7 +34,7 @@ df['period'] = df['date'].apply(
 )
 
 
-# --- СЛОВАРИ КЛЮЧЕВЫХ СЛОВ ПО ФРЕЙМАМ ---
+# Словари ключевых слов по фреймам
 FRAMES = {
     "угроза безопасности": [
         "террор", "угроз", "атак", "боевик", "взрыв", "жертв",
@@ -86,7 +83,7 @@ def detect_frame(text, title=""):
     return best
 
 
-# --- КЛАССИФИКАЦИЯ ---
+# Классификация
 df["frame"] = df.apply(
     lambda row: detect_frame(row.get("text", ""), row.get("title", "")),
     axis=1
@@ -101,7 +98,7 @@ print()
 print("=== По изданиям ===")
 print(df.groupby("source")["frame"].value_counts())
 
-# --- СОХРАНЕНИЕ ---
+# Сохранение файла
 df.to_csv("corpus_frames.csv", index=False, encoding="utf-8-sig")
 files.download("corpus_frames.csv")
 print("Сохранено")
