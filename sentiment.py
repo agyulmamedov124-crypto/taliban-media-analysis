@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 sentiment.py
-------------
+
 Тональный анализ корпуса публикаций о движении «Талибан».
 Использует трансформерную модель rubert-base-cased-sentiment,
 обученную на русскоязычных текстах.
 Результат сохраняется в corpus_sentiment.csv.
-
-Использование (Google Colab):
-    Запустите скрипт и загрузите corpus.csv через диалоговое окно.
 
 Зависимости:
     pip install transformers torch pandas tqdm
@@ -23,7 +20,7 @@ import pandas as pd
 from google.colab import files
 
 
-# --- ЗАГРУЗКА МОДЕЛИ ---
+# Загрузка модели
 sentiment_model = pipeline(
     "text-classification",
     model="blanchefort/rubert-base-cased-sentiment",
@@ -52,12 +49,12 @@ def get_sentiment(text):
         return "нейтральная"
 
 
-# --- ЗАГРУЗКА КОРПУСА ---
+# Загрузка корпуса
 uploaded = files.upload()
 df = pd.read_csv("corpus.csv")
 print(f"Статей: {len(df)}")
 
-# --- ТОНАЛЬНЫЙ АНАЛИЗ ---
+# Тональный анализ
 tqdm.pandas()
 df["sentiment"] = df["text"].progress_apply(get_sentiment)
 
@@ -66,7 +63,7 @@ print(df["sentiment"].value_counts())
 print("\nПо изданиям:")
 print(df.groupby("source")["sentiment"].value_counts())
 
-# --- СОХРАНЕНИЕ ---
+# Сохранение файла
 df.to_csv("corpus_sentiment.csv", index=False, encoding="utf-8-sig")
 files.download("corpus_sentiment.csv")
 print("Сохранено")
