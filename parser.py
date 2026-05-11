@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 parser.py
----------
+
 Парсер HTM-файлов выгрузок из базы данных Integrum.
 Извлекает из каждой статьи: источник, дату, заголовок, текст.
 Результат сохраняется в corpus.csv.
-
-Использование (Google Colab):
-    Запустите скрипт и загрузите HTM-файлы через диалоговое окно.
 
 Зависимости:
     pip install beautifulsoup4 pandas lxml
@@ -37,7 +34,7 @@ def parse_integrum_htm(content):
                 "".join(str(s) for s in siblings), "html.parser"
             )
 
-            # --- ДАТА ---
+            # Данные
             date = ""
             for td in block.find_all("td", attrs={"bgcolor": "#e4e1d9"}):
                 m = date_pattern.search(td.get_text())
@@ -45,7 +42,7 @@ def parse_integrum_htm(content):
                     date = m.group()
                     break
 
-            # --- ИСТОЧНИК ---
+            # Источник
             source = ""
             for td in block.find_all("td", attrs={"bgcolor": "#e4e1d9"}):
                 td_text = td.get_text(" ").strip()
@@ -54,7 +51,7 @@ def parse_integrum_htm(content):
                     source = " ".join(raw.split()).strip()
                     break
 
-            # --- ЗАГОЛОВОК ---
+            # Заголовок
             title = ""
             h3 = block.find("h3")
             if h3:
@@ -68,7 +65,7 @@ def parse_integrum_htm(content):
                        ";" not in candidate:
                         title = candidate
 
-            # --- ТЕКСТ ---
+            # Текст
             text = ""
             pre = block.find("pre")
             if pre:
@@ -97,8 +94,8 @@ def parse_integrum_htm(content):
     return articles
 
 
-# --- ЗАГРУЗКА И ОБРАБОТКА ФАЙЛОВ ---
-uploaded = files.upload()  # загружай все HTM-файлы сразу
+# -Загрузка и обработка файлов
+uploaded = files.upload() 
 
 all_articles = []
 
